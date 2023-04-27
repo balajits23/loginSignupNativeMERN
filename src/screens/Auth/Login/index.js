@@ -5,8 +5,42 @@ import ButtonComponent from "../../../components/atoms/ButtonComponent";
 import InputField from "../../../components/atoms/Inputfield";
 import { KeyboardAvoidingView } from "react-native";
 import { ScrollView } from "react-native";
+import { useState } from "react";
+import { loginRequest } from "../../../services/login";
 
-const Login = () => {
+const Login = ({ navigation }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errMsg, seterrMsg] = useState(null);
+
+  const handleTextChange = (value, name) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async () => {
+    const { email, password } = formData;
+    if (!email || !password) {
+      seterrMsg("Please fill all the fields!");
+      return;
+    } else {
+      if (email && password) {
+        const payload = {
+          email: email,
+          password: password,
+        };
+        const { data, errRes } = await loginRequest(payload);
+        if (data) {
+          navigation.navigate("Homepage");
+        } else if (errRes) {
+          seterrMsg(errRes?.error);
+        }
+      }
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
@@ -29,6 +63,11 @@ const Login = () => {
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
                 Sign In to continue
               </Text>
+              {errMsg ? (
+                <View style={styles.errmsgBox}>
+                  <Text style={styles.errmsgStyle}>{errMsg}</Text>
+                </View>
+              ) : null}
             </View>
             <KeyboardAvoidingView behavior="height" style={{ marginTop: 30 }}>
               <ScrollView
@@ -36,10 +75,23 @@ const Login = () => {
                 showsVerticalScrollIndicator={false}
               >
                 <View>
-                  <InputField label="Email" placeholder="enter email id" />
+                  <InputField
+                    label="Email"
+                    placeholder="Enter your email id"
+                    value={formData.email}
+                    onChangeText={(text) => handleTextChange(text, "email")}
+                    onPressIn={() => seterrMsg(null)}
+                  />
                 </View>
                 <View>
-                  <InputField label="Password" placeholder="enter password" />
+                  <InputField
+                    label="Password"
+                    placeholder="Enter your password"
+                    secureTextEntry={true}
+                    value={formData.password}
+                    onChangeText={(text) => handleTextChange(text, "password")}
+                    onPressIn={() => seterrMsg(null)}
+                  />
                 </View>
                 <View>
                   <Text
@@ -52,7 +104,11 @@ const Login = () => {
                     Forgot Password?
                   </Text>
                 </View>
-                <ButtonComponent variant="contained" name="Login" />
+                <ButtonComponent
+                  variant="contained"
+                  name="Login"
+                  onPress={handleSubmit}
+                />
                 <View>
                   <Text
                     style={{
@@ -63,7 +119,12 @@ const Login = () => {
                     }}
                   >
                     Don't have an account?{" "}
-                    <Text style={{ color: "#0D3248" }}>Signup</Text>
+                    <Text
+                      style={{ color: "#0D3248" }}
+                      onPress={() => navigation.navigate("signUp")}
+                    >
+                      Signup
+                    </Text>
                   </Text>
                 </View>
               </ScrollView>
@@ -108,5 +169,15 @@ const styles = StyleSheet.create({
     paddingVertical: "15%",
     display: "flex",
     justifyContent: "space-around",
+  },
+  errmsgStyle: {
+    color: "white",
+    textAlign: "center",
+  },
+  errmsgBox: {
+    backgroundColor: "red",
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 5,
   },
 });

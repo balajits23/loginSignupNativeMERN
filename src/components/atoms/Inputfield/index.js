@@ -4,11 +4,12 @@ import { TextInput } from "react-native";
 import { View } from "react-native";
 
 const InputField = ({
-  label = "label",
+  label = "",
   placeholder = "placeholder",
   secureTextEntry = false,
   value = "",
   onChangeText = () => {},
+  onPressIn = () => {},
 }) => {
   return (
     <View style={styles.root}>
@@ -20,6 +21,7 @@ const InputField = ({
         placeholderTextColor="#0D3248"
         value={value}
         onChangeText={(newText) => onChangeText(newText)}
+        onPressIn={onPressIn}
       />
     </View>
   );

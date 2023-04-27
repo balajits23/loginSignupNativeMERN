@@ -3,7 +3,7 @@ import bg from "../../../../assets/bg.png";
 import welcome_logo from "../../../../assets/welcome_logo.png";
 import ButtonComponent from "../../../components/atoms/ButtonComponent";
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
       <Image style={styles.bgContainer} source={bg} />
@@ -11,9 +11,15 @@ const Welcome = () => {
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={welcome_logo} />
         </View>
-        <View style={styles.btnContainer}>
-          <ButtonComponent name="Login" />
-          <ButtonComponent name="Signup" />
+        <View>
+          <ButtonComponent
+            name="Login"
+            onPress={() => navigation.navigate("login")}
+          />
+          <ButtonComponent
+            name="Signup"
+            onPress={() => navigation.navigate("signUp")}
+          />
         </View>
       </View>
     </View>

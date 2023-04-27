@@ -3,10 +3,15 @@ import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { View } from "react-native";
 
-const ButtonComponent = ({ name = "Button", variant = "outlined" }) => {
+const ButtonComponent = ({
+  name = "Button",
+  variant = "outlined",
+  onPress = () => {},
+}) => {
   return (
     <View style={styles.root}>
       <TouchableOpacity
+        onPress={onPress}
         style={
           variant === "outlined"
             ? [
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
   textStyle: {
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   root: {
     margin: 5,
